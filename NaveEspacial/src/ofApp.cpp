@@ -13,6 +13,7 @@ void ofApp::setup() {
 	velocity = Vector2D(300, 0);
 	mouse.set(position);
 
+	//Gerando as posições das estrelas
 	for (int i = 0; i < STAR_AMOUNT; i++) {
 		starPosion[i] = Vector2D(rand() % ofGetWidth(), rand() % ofGetHeight());
 	}
@@ -21,17 +22,23 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	position += velocity * ofGetLastFrameTime();
-	global_camera += velocity * ofGetLastFrameTime();
 
+	position += velocity * ofGetLastFrameTime();
+	//Atualizando a posicao da "camera"
+	global_camera += velocity * ofGetLastFrameTime();
+	
+	//Zerando a velocidade de movimentacao da nave e da camera
 	if (distanceSqr(position, destination) < 3 * 3) {
 		
 		velocity.set(0, 0);
 	}
 
+	//Gerando uma velocidade para que a nave percorra o caminha em 0.5 segundo
+	//em qualquer distancia
 	velocity = (mouse - position) / 0.5f;
 	destination = mouse;
 
+	//Fazendo as estrelas que chegarem ao limite da tela serem reposicionadas no lado oposto da tela 
 	for (int i = 0; i < STAR_AMOUNT; i++){
 		Vector2D& pos = starPosion[i];
 
@@ -51,18 +58,21 @@ void ofApp::update() {
 void ofApp::draw() {
 	ofSetBackgroundColor(0, 0, 0);
 
+	//Imprimindo as estrelas
 	for (int i = 0; i < STAR_AMOUNT; i++){
 		drawStar(starPosion[i]);
 	}
-
+	//Imprimendo a nave
 	drawImage(spaceship, Vector2D(ofGetWidth(), ofGetHeight()) / 2);
 }
 
+//Funcao para imprimir a nave
 void ofApp::drawImage(ofImage& image, Vector2D& position) {
 	Vector2D tmp = position + global_camera;
 	image.draw(tmp.x, tmp.y);
 }
 
+//Funcao para imprimir as estrelas
 void ofApp::drawStar(Vector2D star) {
 	Vector2D tmp = star - global_camera;
 	ofDrawCircle(tmp.x, tmp.y, 1);
